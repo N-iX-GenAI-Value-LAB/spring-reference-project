@@ -49,8 +49,8 @@ public class DataSourceConfig {
         hikariConfig.setMaximumPoolSize(AVAILABLE_PROCESSORS);
         hikariConfig.setMinimumIdle(AVAILABLE_PROCESSORS / 2);
         hikariConfig.setConnectionTimeout(30000);
-        hikariConfig.setIdleTimeout(60000);
-        hikariConfig.setMaxLifetime(120000);
+        hikariConfig.setIdleTimeout(600000);
+        hikariConfig.setMaxLifetime(1800000);
         hikariConfig.setJdbcUrl(url);
         hikariConfig.setUsername(userName);
         hikariConfig.setPassword(password);

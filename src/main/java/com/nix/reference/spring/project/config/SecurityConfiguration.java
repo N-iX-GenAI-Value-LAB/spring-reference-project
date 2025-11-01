@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +21,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.nix.reference.spring.project.controller.ProductController.API_PREFIX;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -32,12 +30,18 @@ public class SecurityConfiguration {
     public SecurityFilterChain webHttpSecurity(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/login", "/register", "/workflow.html", "/workflow").permitAll()
                     .requestMatchers(HttpMethod.POST, API_PREFIX +"/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, API_PREFIX +"/login", "/register").permitAll()
                     .anyRequest().authenticated())
-            .httpBasic(withDefaults());
+            .formLogin(form -> form
+                    .permitAll()
+                    .defaultSuccessUrl("/", true)
+                    .successHandler(successfulAuthHandler())
+                    .failureHandler(failedAuthHandler()))
+            .logout(logout -> logout
+                    .permitAll()
+                    .addLogoutHandler(postLogoutHandler()));
         return http.build();
     }
 
@@ -55,6 +59,7 @@ public class SecurityConfiguration {
         return source;
     }
 
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
@@ -78,12 +83,12 @@ public class SecurityConfiguration {
     public UserDetailsService userDetailsService() {
         UserDetails user = User.builder()
                                .username("user")
-                               .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW") // password
+                               .password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW") // password
                                .roles("USER")
                                .build();
         UserDetails admin = User.builder()
                                 .username("admin")
-                                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW") // password
+                                .password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW") // password
                                 .roles("USER", "ADMIN")
                                 .build();
         return new InMemoryUserDetailsManager(user, admin);

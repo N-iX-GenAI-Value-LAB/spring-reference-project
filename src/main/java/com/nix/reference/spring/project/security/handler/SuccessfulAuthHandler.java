@@ -8,6 +8,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class SuccessfulAuthHandler implements AuthenticationSuccessHandler {
 
@@ -16,16 +17,16 @@ public class SuccessfulAuthHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest httpServletRequest,
                                         final HttpServletResponse httpServletResponse,
-                                        final Authentication authentication) {
+                                        final Authentication authentication) throws IOException {
         String loggedInUser = null;
         final Object authenticationPrincipal = authentication.getPrincipal();
-        if (authenticationPrincipal instanceof UserDetails) {
-            final UserDetails springSecurityUser = (UserDetails) authenticationPrincipal;
+        if (authenticationPrincipal instanceof UserDetails springSecurityUser) {
             loggedInUser = springSecurityUser.getUsername();
         } else if (authenticationPrincipal instanceof String) {
             loggedInUser = (String) authenticationPrincipal;
         }
 
         LOGGER.trace("The current authenticated user is '{}'", loggedInUser);
+        httpServletResponse.sendRedirect("/");
     }
 }
