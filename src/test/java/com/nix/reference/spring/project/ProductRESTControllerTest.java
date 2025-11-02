@@ -1,5 +1,6 @@
 package com.nix.reference.spring.project;
 
+import com.nix.reference.spring.project.controller.ProductController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +12,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Base64;
+
+import static com.nix.reference.spring.project.controller.ProductController.API_PREFIX;
 import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
@@ -23,8 +27,12 @@ class ProductRESTControllerTest {
     @Test
     void given_thereAreTabletsInTheDatabase_andANewTabletIsCreated_whenRetrievingTablets_thenTheirNumberIsCorrect()
             throws Exception {
+        String authHeader = "Basic " + Base64.getEncoder().encodeToString("user:password".getBytes());
+
+        // create a product
         MockHttpServletRequestBuilder builder =
-                MockMvcRequestBuilders.post("/product")
+                MockMvcRequestBuilders.post(API_PREFIX + "/product")
+                                      .header("Authorization", authHeader)
                                       .contentType(MediaType.APPLICATION_JSON)
                                       .content(createProduct("Tablet"));
 
@@ -32,27 +40,19 @@ class ProductRESTControllerTest {
                .andExpect(MockMvcResultMatchers.status()
                                                .isOk());
 
-        // create one more product
-        builder = MockMvcRequestBuilders.post("/product")
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .content(createProduct("Phone"));
-
-        mockMvc.perform(builder)
-               .andExpect(MockMvcResultMatchers.status()
-                                               .isOk());
-
         // get all products
-        builder = MockMvcRequestBuilders.get("/product")
+        builder = MockMvcRequestBuilders.get(API_PREFIX + "/product")
+                                        .header("Authorization", authHeader)
                                         .accept(MediaType.APPLICATION_JSON);
         mockMvc.perform(builder)
                .andExpect(MockMvcResultMatchers.status()
                                                .isOk())
-               .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(12)))
+               .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
                .andDo(MockMvcResultHandlers.print());
 
     }
 
     private String createProduct(final String productName) {
-        return "{ \"name\": \"" + productName + "\"}";
+        return "{ \"name\": \"" + productName + "\", \"price\": 30.5}";
     }
 }

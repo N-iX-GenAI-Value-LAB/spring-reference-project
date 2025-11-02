@@ -41,7 +41,7 @@ public class ProductService {
     )
     public String save(final ProductDTO productDTO) {
         // a lot of processing goes in here, before actually saving the product :)
-        productRepository.save(new Product(5, productDTO.name(), 30.5));
+        productRepository.save(new Product(productDTO.name(), productDTO.price()));
         return "OK";
     }
 
