@@ -1,0 +1,18 @@
+spring:
+  main:
+    banner-mode: off
+    log-startup-info: false
+
+  jpa:
+    open-in-view: false
+
+logging:
+  level:
+    root: ERROR
+    com.nix.reference.spring.project: ERROR
+    com.nix.reference.spring.project.aop.aspect: ERROR
+    org.springframework: ERROR
+    org.springframework.boot: ERROR
+    org.springframework.test: ERROR
+    org.hibernate: ERROR
+    org.testng: ERROR
