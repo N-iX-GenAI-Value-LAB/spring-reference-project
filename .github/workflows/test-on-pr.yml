@@ -26,6 +26,16 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Cache Maven build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            target
+            **/target
+          key: ${{ runner.os }}-maven-build-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-build-
+
       - name: Run tests
         id: test
         run: mvn -B test 2>&1 | tee test-output.txt
@@ -37,8 +47,8 @@ jobs:
           # Strip ANSI color codes from output
           sed 's/\x1b\[[0-9;]*m//g' test-output.txt > test-output-clean.txt
 
-          # Extract only test results (from "T E S T S" to the Results summary)
-          awk '/T E S T S/,/Tests run:.*Failures:.*Errors:.*Skipped:/' test-output-clean.txt > test-results.txt
+          # Extract only the final Results summary
+          grep -A 2 "^\[INFO\] Results:" test-output-clean.txt > test-results.txt || echo "[INFO] No test results found" > test-results.txt
 
           echo "## Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

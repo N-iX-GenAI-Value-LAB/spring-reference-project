@@ -147,6 +147,7 @@
                     <argLine>
                         -XX:+EnableDynamicAgentLoading
                         -Djdk.instrument.traceUsage=false
+                        -Xshare:off
                     </argLine>
                 </configuration>
             </plugin>
