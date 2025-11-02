@@ -2,7 +2,7 @@
 
 A complete Spring Boot 3.5.6 reference application demonstrating enterprise-grade patterns and best practices for building REST APIs with Spring Framework.
 
-[![Tests](https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/actions/workflows/test-on-pr.yml/badge.svg?event=project)](https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/actions/workflows/test-on-pr.yml)
+[![Tests](https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/actions/workflows/test-on-pr.yml/badge.svg)](https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/actions/workflows/test-on-pr.yml)
 
 ## Quick Start
 
