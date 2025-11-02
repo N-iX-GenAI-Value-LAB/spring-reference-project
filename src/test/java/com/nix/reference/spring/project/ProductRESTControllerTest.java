@@ -47,8 +47,7 @@ class ProductRESTControllerTest {
         mockMvc.perform(builder)
                .andExpect(MockMvcResultMatchers.status()
                                                .isOk())
-               .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
-               .andDo(MockMvcResultHandlers.print());
+               .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)));
 
     }
 

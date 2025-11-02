@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
+    <!-- Suppress Logback internal status messages -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%date{HH:mm:ss.SSS}] %level %message [%class{0}]%n</pattern>
@@ -10,8 +13,7 @@
 
     <logger name="org.springframework" level="WARN"/>
 
-    <root>
-        <level value="WARN"/>
+    <root level="WARN">
         <appender-ref ref="Console"/>
     </root>
 </configuration>
