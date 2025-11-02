@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                     .requestMatchers("/login", "/register", "/workflow.html", "/workflow").permitAll()
                     .requestMatchers(HttpMethod.POST, API_PREFIX +"/auth/**").permitAll()
                     .anyRequest().authenticated())
+            .httpBasic(httpBasic -> httpBasic.realmName("Spring Reference Project"))
             .formLogin(form -> form
                     .permitAll()
                     .defaultSuccessUrl("/", true)
