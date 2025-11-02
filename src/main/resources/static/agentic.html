@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agentic Coding Stack</title>
+  <style>
+    :root{
+      --bg:#0e1117; --ink:#eef2ff; --muted:#9aa4c7; --line:#2a3250; --accent:#8ab4ff; --accent2:#7de5d6;
+      --panel:#131a2a; --radius:18px; --shadow:0 12px 28px rgba(0,0,0,.35);
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f7f9ff; --ink:#0b1020; --muted:#5c6a8f; --line:#e6ebff; --accent:#2c5cff; --accent2:#0fb9b1; --panel:#ffffff; --shadow:0 10px 22px rgba(35,60,150,.10);} }
+
+    *{box-sizing:border-box}
+    body{margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; color:var(--ink); background:
+      radial-gradient(500px 400px at 10% -10%, rgba(138,180,255,.12), transparent 40%),
+      radial-gradient(400px 400px at 100% 10%, rgba(125,229,214,.12), transparent 40%), var(--bg);}
+
+    .wrap{max-width:1100px; margin:28px auto; padding:0 20px 56px}
+    h2{margin-bottom: 10px}
+    .sub{color:var(--muted); font-size:14px; letter-spacing:.5px; margin-bottom: 6px}
+
+    .board{position:relative; margin-top:14px; padding:14px; border:1px solid var(--line); border-radius: 14px; background:linear-gradient(180deg,var(--panel), rgba(19,26,42,.9)); box-shadow:var(--shadow);}
+
+    .row{display:grid; grid-template-columns: 1fr; gap:20px}
+
+    .lane{position:relative; display:grid; grid-template-columns: 1fr 140px; gap:18px; align-items:stretch;}
+    @media(min-width:900px){ .lane{grid-template-columns: 1fr 220px;} }
+
+    .card{background:rgba(255,255,255,.04); border:1px solid rgba(138,180,255,.35); border-radius:var(--radius); padding:10px 10px; display:grid; grid-template-columns: 1.2fr .8fr; align-items:center; gap:14px}
+    .title{font-weight:200; font-size: clamp(14px,1.2vw,18px); letter-spacing:.5px; margin-bottom:6px}
+    .subtitle{color:var(--muted); font-size:13px; margin-bottom:10px}
+    .bullets{margin:0; padding-left:16px; line-height:1.5; font-size:14px}
+
+    .side{display:flex; align-items:center; justify-content:center; padding:10px; border-radius:10px; border:1px dashed rgba(138,180,255,.32); color:var(--muted); text-align:center; font-size:14px}
+
+    .examples{color:var(--accent); font-weight:600}
+    .examples small{color:var(--muted); font-weight:500}
+
+    .arrowcol{display:grid; place-items:center}
+    .arrow svg{width:20px; height:50px}
+    .arrow path{fill: url(#grad)}
+
+    .legend{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:14px; font-size:14px;}
+    .legend .mini{border:1px dashed rgba(138,180,255,.32); border-radius:12px; padding:12px; margin-bottom: 4px;}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: rgba(0,0,0,.28); padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,.12); font-size:12px}
+
+    .note{margin-top:10px; color:var(--muted); font-size:12px; text-align:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Agentic Coding Stack</h2>
+    <div class="sub">A simple view of how developers, agentic tools, and foundation models fit together</div>
+
+    <div class="board" role="group" aria-label="Agentic coding stack diagram">
+
+      <!-- SVG gradient definition for arrows -->
+      <svg width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent2)"/></linearGradient></defs></svg>
+
+      <div class="row">
+        <!-- 1. Developer -->
+        <div class="lane">
+          <div class="card">
+            <div>
+              <div class="title">Developer</div>
+              <div class="subtitle">Drives the work, prompts the tool, reviews, and ships</div>
+            </div>
+            <ul class="bullets" aria-label="developer responsibilities">
+              <li>Navigate codebases</li>
+              <li>Automate routine tasks</li>
+            </ul>
+          </div>
+          <div class="side">navigate • automate</div>
+        </div>
+
+        <!-- Connector (choosing) between tool and model -->
+        <div class="lane" aria-hidden="true" style="grid-template-columns: 1fr 100px;">
+          <div></div>
+          <div class="arrowcol">
+            <div class="side" style="margin-bottom:2px">choosing</div>
+            <div class="arrow" aria-hidden="true">
+              <svg viewBox="0 0 40 100"><path d="M20 0 C 20 25, 5 35, 5 50 C 5 65, 20 75, 20 100 L 35 85 L 30 85 L 40 75 L 30 75 L 40 65 L 24 78 C 24 65, 20 60, 20 50 C 20 40, 24 35, 24 22 Z"/></svg>
+            </div>
+            <div class="side" style="margin-top:2px">choosing</div>
+          </div>
+        </div>
+
+        <!-- 2. Agentic Coding Tool -->
+        <div class="lane">
+          <div class="card">
+            <div>
+              <div class="title">Agentic Coding Tool</div>
+              <div class="subtitle">Runs in your environment • orchestrates context and actions</div>
+              <div class="examples">Claude Code · Cursor · Codex <small>(examples)</small></div>
+            </div>
+            <ul class="bullets" aria-label="tool capabilities">
+              <li>Configure model & context</li>
+              <li>Give tools: repo access, tests, CLI, PRs</li>
+            </ul>
+          </div>
+          <div class="side">configure • give tools</div>
+        </div>
+
+        <!-- 3. Foundation Model -->
+        <div class="lane">
+          <div class="card">
+            <div>
+              <div class="title">Foundation Model (LLM)</div>
+              <div class="subtitle">Reasoning, generation, and editing</div>
+              <div class="examples">GPT‑5 · Claude Opus 4.1 · Gemini 2.5 Pro <small>(examples)</small></div>
+            </div>
+            <ul class="bullets" aria-label="model role">
+              <li>Understands instructions</li>
+              <li>Produces code & explanations</li>
+            </ul>
+          </div>
+          <div class="side">core intelligence</div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="mini"><strong>Flow:</strong> Developer → Agentic Tool → Model, user & agent tools & models selection</div>
+        <div class="mini"><strong>Tools:</strong> PR creation with <span class="kbd">gh</span>, tests via <span class="kbd">npm / mvn</span>, repo actions via <span class="kbd">git</span>.</div>
+        <div class="mini"><strong>Outcome:</strong> Faster delivery, safer automation, clear Separation of Concerns</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
