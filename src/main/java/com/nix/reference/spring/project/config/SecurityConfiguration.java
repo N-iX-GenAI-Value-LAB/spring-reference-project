@@ -31,7 +31,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/login", "/register", "/workflow.html", "/workflow").permitAll()
+                    .requestMatchers("/login", "/register", "/workflow.html", "/workflow", "/.well-known/**", "/favicon.ico").permitAll()
                     .requestMatchers(HttpMethod.POST, API_PREFIX +"/auth/**").permitAll()
                     .anyRequest().authenticated())
             .httpBasic(httpBasic -> httpBasic.realmName("Spring Reference Project"))
