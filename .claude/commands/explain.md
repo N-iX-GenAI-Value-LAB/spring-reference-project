@@ -1,0 +1,1 @@
+Search the codebase for information related to the user's topic or question. Provide a succinct, clear explanation based on your findings, including relevant file paths and line numbers. If you cannot find relevant information, explain why (e.g., topic not present in codebase, needs clarification, or outside project scope).

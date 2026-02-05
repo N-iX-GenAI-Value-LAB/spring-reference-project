@@ -1,0 +1,1 @@
+Summarize the current conversation in a concise Markdown document and save it to the project root with a descriptive filename based on the conversation topic (e.g., `summary-feature-implementation.md`). Include key decisions, changes made, and any important context.
