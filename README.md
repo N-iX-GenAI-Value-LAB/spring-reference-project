@@ -87,6 +87,14 @@ The application supports multiple profiles:
 
 H2 console available at runtime for database inspection.
 
+## Claude Code Workflow
+
+This project includes Claude Code commands for streamlined development. See the [SDLC Workflow Guide](./docs/claude-code-workflow.md) for:
+
+- **5-phase workflow**: Understand → Develop → Review → Integrate → Maintain
+- **Quick paths** for common tasks (small fixes, feature work)
+- **Command reference** for all available `/commands`
+
 ## Further Information
 
 For detailed architecture information, development guidelines, and advanced patterns used in this project, see [CLAUDE.md](./CLAUDE.md).

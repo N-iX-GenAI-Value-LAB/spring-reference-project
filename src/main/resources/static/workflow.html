@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Claude Code Development Workflow – Visual Diagram</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Claude Code SDLC Workflow</title>
   <style>
     :root {
       --bg: #0b1020;
@@ -13,8 +14,6 @@
       --muted: #a9b6d6;
       --primary: #7aa2ff;
       --accent: #5eead4;
-      --ok: #86efac;
-      --warn: #fde68a;
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
       --radius: 16px;
     }
@@ -28,8 +27,6 @@
         --muted: #51607f;
         --primary: #2656ff;
         --accent: #0ea5a3;
-        --ok: #16a34a;
-        --warn: #a16207;
         --shadow: 0 10px 30px rgba(23, 41, 76, 0.12);
       }
     }
@@ -37,25 +34,20 @@
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      color: var(--text); background: radial-gradient(1200px 800px at 20% -10%, rgba(122,162,255,.12), transparent 40%),
-               radial-gradient(1000px 700px at 110% 10%, rgba(94,234,212,.10), transparent 40%),
-               var(--bg);
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(122,162,255,.12), transparent 40%),
+                  radial-gradient(1000px 700px at 110% 10%, rgba(94,234,212,.10), transparent 40%),
+                  var(--bg);
     }
 
     .wrap { max-width: 1100px; margin: 48px auto; padding: 0 20px 64px; }
 
-    header {
-      display: grid; gap: 8px; justify-items: center; text-align: center; margin-bottom: 24px;
-    }
-
-    h1 {
-      font-size: clamp(24px, 3.2vw, 36px);
-      margin: 0; letter-spacing: 0.4px;
-    }
+    header { display: grid; gap: 8px; justify-items: center; text-align: center; margin-bottom: 24px; }
+    h1 { font-size: clamp(24px, 3.2vw, 36px); margin: 0; letter-spacing: 0.4px; }
     .subtitle { color: var(--muted); font-size: 14px; }
 
-    /* Canvas */
     .canvas {
       position: relative; padding: 28px; border-radius: var(--radius);
       background: linear-gradient(180deg, var(--panel), var(--panel-2));
@@ -63,166 +55,144 @@
       overflow: hidden;
     }
 
-    /* Nodes row */
     .lane {
       display: grid;
-      grid-template-columns: repeat(5, minmax(170px, 1fr));
-      gap: 16px; align-items: stretch;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      gap: 14px;
     }
 
     .node {
-      position: relative;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(122,162,255,0.35);
       border-radius: var(--radius);
-      padding: 10px 10px 10px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 12px;
     }
 
-    .node h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.5px; }
-    .node .badge { font-size: 12px; color: var(--muted); margin-bottom: 10px }
-    .node ul { margin: 6px 2px 2px 6px; padding: 2px; line-height: 1.3; font-size: 12px }
-    .node ul li { margin-bottom: 6px }
+    .node h3 { margin: 0 0 4px; font-size: 13px; letter-spacing: 0.3px; }
+    .node .desc { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .node .cmds { display: flex; flex-direction: column; gap: 4px; }
 
-    .icon {
-      width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 6px;
+    .kbd {
+      background: rgba(0,0,0,.25);
+      padding: 3px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,.1);
+      font-size: 11px;
+      font-family: ui-monospace, monospace;
     }
 
-    /* Connectors */
-    svg.flow { width: 100%; height: 90px; display: block; margin: 8px 0 12px; overflow: visible; }
-    .arrow { fill: none; stroke: var(--primary); stroke-width: 2.5; }
+    svg.flow { width: 100%; height: 50px; display: block; margin: 10px 0; overflow: visible; }
+    .arrow { fill: none; stroke: var(--primary); stroke-width: 2; }
     .arrowhead { fill: var(--primary); }
 
-    /* Footer info */
-    .legend {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 14px;
+    .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 14px; }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(122,162,255,0.35);
+      border-radius: 6px;
+      padding: 8px 10px;
     }
-    .card { background: rgba(255,255,255,0.04); border: 1px dashed rgba(122,162,255,0.35); border-radius: 6px; padding: 4px; }
-    .card h4 { margin: 0 0 10px 2px; font-size: 14px; letter-spacing: 1px; color: var(--muted); }
-    .card div { font-size: 12px; margin-bottom: 6px }
-    .kbd { background: rgba(0,0,0,.25); padding: 2px 4px; border-radius: 4px; border: 1px solid rgba(255,255,255,.1); font-size: 12px; }
-    .hint { color: var(--muted); font-size: 12px; text-align: center; margin-top: 16px; }
+    .card h4 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.5px; color: var(--muted); }
+    .card div { font-size: 11px; margin-bottom: 4px; }
+
+    .hint { color: var(--muted); font-size: 11px; text-align: center; margin-top: 14px; }
+    .hint a { color: var(--primary); }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>Claude Code Development Workflow</h1>
-      <div class="subtitle">Plan → Isolate → Implement → Verify → Review (PR)</div>
+      <h1>Claude Code SDLC Workflow</h1>
+      <div class="subtitle">Understand → Develop → Review → Integrate → Maintain</div>
     </header>
 
-    <section class="canvas" aria-label="Workflow diagram">
-      <svg aria-hidden="true" style="position:absolute; inset:-25% -15% auto auto; width:380px; height:380px; filter:blur(42px); opacity:.18">
-        <defs><radialGradient id="g1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="var(--primary)"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs>
-        <circle cx="190" cy="190" r="190" fill="url(#g1)"/>
-      </svg>
-
-      <!-- Nodes row -->
+    <section class="canvas">
       <div class="lane">
-        <!-- 1. Plan -->
+        <!-- 1. Understand -->
         <div class="node">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
-            Step 1: Plan
-          </h3>
-          <div class="badge">Implementation plan</div>
-          <ul>
-            <li>Analyze & outline the solution</li>
-            <li>Identify the impacted files</li>
-            <li>Create the <span class="kbd">docs/plans/&hellip;-design.md</span>document</li>
-          </ul>
+          <h3>1. Understand</h3>
+          <div class="desc">Explore & catch up</div>
+          <div class="cmds">
+            <span class="kbd">/explain</span>
+            <span class="kbd">/git:catchup</span>
+          </div>
         </div>
 
-        <!-- 2. ISOLATE -->
+        <!-- 2. Develop -->
         <div class="node">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4zm0 6l9 4 9-4"/></svg>
-            Step 2: Isolate
-          </h3>
-          <div class="badge">Git worktree</div>
-          <ul>
-            <li>Create a feature branch</li>
-            <li>Use <span class="kbd">using-git-worktrees</span></li>
-            <li>Work dir: <span class="kbd">.worktrees/[feature]</span></li>
-          </ul>
+          <h3>2. Develop</h3>
+          <div class="desc">Implement changes</div>
+          <div class="cmds">
+            <span class="kbd">/quality:quick-fix</span>
+            <span class="kbd">/git:commit</span>
+          </div>
         </div>
 
-        <!-- 3. IMPLEMENT -->
+        <!-- 3. Review -->
         <div class="node">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5m0 0h7a3 3 0 013 3v0a3 3 0 01-3 3H7m6-6h3m0 0v14"/></svg>
-            Step 3: Implement
-          </h3>
-          <div class="badge">Code to plan</div>
-          <ul>
-            <li>Implement changes, manage context</li>
-            <li>Build & style check</li>
-            <li>Run relevant tests</li>
-          </ul>
+          <h3>3. Review</h3>
+          <div class="desc">Quality gates</div>
+          <div class="cmds">
+            <span class="kbd">/pr:checks</span>
+            <span class="kbd">/pr:review:local</span>
+            <span class="kbd">/quality:simplify</span>
+          </div>
         </div>
 
-        <!-- 4. VERIFY -->
+        <!-- 4. Integrate -->
         <div class="node">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M3 12l5 5L21 4"/></svg>
-            Step 4: Verify
-          </h3>
-          <div class="badge">Quality gates</div>
-          <ul>
-            <li>Run tests & checks</li>
-            <li>Confirm behavior</li>
-            <li>Prepare PR notes</li>
-          </ul>
+          <h3>4. Integrate</h3>
+          <div class="desc">PR & merge</div>
+          <div class="cmds">
+            <span class="kbd">/pr:create</span>
+            <span class="kbd">/pr:merge</span>
+          </div>
         </div>
 
-        <!-- 5. REVIEW -->
+        <!-- 5. Maintain -->
         <div class="node">
-          <h3>
-            <svg class="icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v12H5.17L4 17.17V4zM8 20h8"/></svg>
-            Step 5: Review (PR)
-          </h3>
-          <div class="badge">gh + code review</div>
-          <ul>
-            <li>Create PR with <span class="kbd">gh</span></li>
-            <li>Checklist & test plan</li>
-            <li>Ask Claude to review based on the plan</li>
-          </ul>
+          <h3>5. Maintain</h3>
+          <div class="desc">Branch hygiene</div>
+          <div class="cmds">
+            <span class="kbd">/git:sync</span>
+            <span class="kbd">/git:cleanup</span>
+            <span class="kbd">/quality:find-large-files</span>
+          </div>
         </div>
       </div>
 
-      <!-- Connectors between nodes -->
-      <svg class="flow" viewBox="0 0 1100 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow arrows between steps">
+      <!-- Arrows -->
+      <svg class="flow" viewBox="0 0 1100 50" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse">
-            <path d="M0,0 L10,5 L0,10 Z" class="arrowhead" />
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto-start-reverse">
+            <path d="M0,0 L8,4 L0,8 Z" class="arrowhead" />
           </marker>
         </defs>
-        <!-- 4 arrows connecting 5 nodes -->
-        <path class="arrow" marker-end="url(#arrow)" d="M 100 45 C 150 45, 170 45, 210 45" />
-        <path class="arrow" marker-end="url(#arrow)" d="M 320 45 C 370 45, 390 45, 430 45" />
-        <path class="arrow" marker-end="url(#arrow)" d="M 540 45 C 590 45, 610 45, 650 45" />
-        <path class="arrow" marker-end="url(#arrow)" d="M 760 45 C 810 45, 830 45, 870 45" />
+        <path class="arrow" marker-end="url(#arrow)" d="M 95 25 L 195 25" />
+        <path class="arrow" marker-end="url(#arrow)" d="M 305 25 L 405 25" />
+        <path class="arrow" marker-end="url(#arrow)" d="M 515 25 L 615 25" />
+        <path class="arrow" marker-end="url(#arrow)" d="M 725 25 L 825 25" />
       </svg>
 
-      <!-- Legend / helper cards -->
+      <!-- Legend -->
       <div class="legend">
         <div class="card">
-          <h4>Artifacts</h4>
-          <div>Plan → <span class="kbd">docs/plans/&lt;date&gt;-&lt;feature&gt;-design.md</span></div>
-          <div>Branch/Dir → <span class="kbd">.worktrees/&lt;feature&gt;</span></div>
+          <h4>Quick Fix Path</h4>
+          <div><span class="kbd">/quality:quick-fix</span> → <span class="kbd">/git:commit</span> → <span class="kbd">/pr:create</span></div>
         </div>
         <div class="card">
-          <h4>Automations</h4>
-          <div>PR via <span class="kbd">gh</span> • Claude code review</div>
-          <div>Checks → build, tests, type-check</div>
+          <h4>Feature Work</h4>
+          <div>Follow all 5 phases for larger changes</div>
         </div>
         <div class="card">
-          <h4>Outcomes</h4>
-          <div>Isolation • Documentation • Verification • Traceability</div>
+          <h4>Build Commands</h4>
+          <div><span class="kbd">mvn test</span> &nbsp; <span class="kbd">mvn clean package</span></div>
         </div>
       </div>
 
-      <div class="hint">Tip: For small, single-file fixes: skip worktrees, open a PR & assign Claude to review it</div>
+      <div class="hint">
+        Full documentation: <a href="https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/blob/master/docs/claude-code-workflow.md">docs/claude-code-workflow.md</a>
+      </div>
     </section>
   </div>
 </body>
