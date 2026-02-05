@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# Pre-push hook for Spring Boot projects
+# Runs full build with tests before pushing
+# Bypass with: git push --no-verify
+
+set -e
+
+echo "Running pre-push checks..."
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+print_error() { echo -e "${RED}✗ $1${NC}"; }
+print_success() { echo -e "${GREEN}✓ $1${NC}"; }
+print_warning() { echo -e "${YELLOW}! $1${NC}"; }
+print_info() { echo "  $1"; }
+
+# Skip in CI
+if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ] || [ -n "$GITLAB_CI" ] || [ -n "$JENKINS_URL" ]; then
+    print_warning "CI environment detected - skipping pre-push hook"
+    exit 0
+fi
+
+# Temp files for parallel execution
+BUILD_LOG=$(mktemp)
+ARCH_LOG=$(mktemp)
+cleanup() { rm -f "$BUILD_LOG" "$ARCH_LOG"; }
+trap cleanup EXIT
+
+BUILD_EXIT=0
+ARCH_EXIT=0
+
+echo ""
+print_info "Running checks in parallel..."
+echo "----------------------------------------"
+echo ""
+
+# Build with tests in background
+{
+    echo "[Build] Starting mvn verify..."
+    if mvn verify -q 2>&1 | tee "$BUILD_LOG" | tail -5; then
+        echo "[Build] ✓ Passed"
+    else
+        echo "[Build] ✗ Failed"
+        exit 1
+    fi
+} &
+BUILD_PID=$!
+
+# Architecture check in background
+{
+    echo "[Architecture] Starting..."
+    if ./scripts/validate/architecture.sh > "$ARCH_LOG" 2>&1; then
+        echo "[Architecture] ✓ Passed"
+    else
+        echo "[Architecture] ✗ Failed"
+        exit 1
+    fi
+} &
+ARCH_PID=$!
+
+# Wait for results
+wait $BUILD_PID || BUILD_EXIT=1
+wait $ARCH_PID || ARCH_EXIT=1
+
+echo ""
+echo "----------------------------------------"
+echo ""
+echo "Results:"
+echo ""
+
+if [ $BUILD_EXIT -eq 0 ]; then
+    print_success "Build & Tests: Passed"
+else
+    print_error "Build & Tests: Failed"
+    echo ""
+    tail -20 "$BUILD_LOG" | sed 's/^/  /'
+fi
+
+echo ""
+
+if [ $ARCH_EXIT -eq 0 ]; then
+    print_success "Architecture: Passed"
+else
+    print_error "Architecture: Failed"
+    echo ""
+    cat "$ARCH_LOG" | grep -E "^✗|^  " | head -10 | sed 's/^/  /'
+fi
+
+echo ""
+echo "----------------------------------------"
+
+if [ $BUILD_EXIT -ne 0 ] || [ $ARCH_EXIT -ne 0 ]; then
+    print_error "Pre-push checks failed!"
+    echo ""
+    echo "Bypass with: git push --no-verify"
+    exit 1
+else
+    print_success "All pre-push checks passed!"
+    exit 0
+fi
