@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(mvn spring-boot:run:*)",
-      "Bash(mvn dependency:tree:*)"
+      "Bash(mvn dependency:tree:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(bun add:*)",
+      "Bash(bun run:*)"
     ],
     "deny": [],
     "ask": []
