@@ -7,7 +7,10 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(bun add:*)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\n[dev] Add CRUD methods to SectionService\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(mvn compile:*)"
     ],
     "deny": [],
     "ask": []

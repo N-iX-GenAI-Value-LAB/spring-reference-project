@@ -1,6 +1,6 @@
 # Spring Boot Reference Project
 
-A complete Spring Boot 3.5.6 reference application demonstrating enterprise-grade patterns and best practices for building REST APIs with Spring Framework.
+A complete Spring Boot 4.0.2 reference application demonstrating enterprise-grade patterns and best practices for building REST APIs with Spring Framework.
 
 [![Tests](https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/actions/workflows/test-on-pr.yml/badge.svg)](https://github.com/N-iX-GenAI-Value-LAB/spring-reference-project/actions/workflows/test-on-pr.yml)
 
@@ -35,7 +35,7 @@ mvn test -Dtest=ProductControllerTest
 ## Technology Stack
 
 - **Java 21**
-- **Spring Boot 3.5.6**
+- **Spring Boot 4.0.2**
 - **Spring Data JPA** - Data persistence
 - **Spring Security** - Authentication & authorization
 - **H2 Database** - In-memory database
